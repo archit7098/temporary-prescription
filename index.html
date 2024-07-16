@@ -3,218 +3,381 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mental Health Questionnaires</title>
+    <title>Prescription Form</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f0f8ff;
+            background-color: #f0f4f8;
             color: #333;
-            line-height: 1.6;
         }
-        h1 {
-            color: #4a4a4a;
-            text-align: center;
-            margin-bottom: 30px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        h1, h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
         }
-        select, button, input {
-            margin: 10px 0;
-            padding: 10px;
-            font-size: 16px;
-            border-radius: 5px;
-            border: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        select, input[type="text"], input[type="number"] {
-            width: 100%;
-            background-color: #ffffff;
-        }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-right: 10px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .question {
-            background-color: #ffffff;
-            margin-bottom: 15px;
-            padding: 15px;
+        form, #editForm {
+            background-color: white;
+            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .question p {
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        input[type="radio"] {
-            margin-right: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
         label {
-            margin-right: 15px;
-        }
-        #result {
-            margin-top: 20px;
+            display: block;
+            margin-top: 15px;
             font-weight: bold;
-            text-align: center;
-            padding: 15px;
-            background-color: #e6f7ff;
+            color: #2c3e50;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #medicationList {
+            margin-top: 20px;
+            background-color: white;
+            padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-        footer {
-            margin-top: 30px;
-            text-align: center;
-            font-style: italic;
-            color: #666;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
-        @media print {
-            body {
-                background-color: white;
-            }
-            button {
-                display: none;
-            }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .remove-btn, .edit-btn {
+            padding: 5px 10px;
+            font-size: 0.8em;
+            margin-right: 5px;
+        }
+        .remove-btn {
+            background-color: #e74c3c;
+        }
+        .remove-btn:hover {
+            background-color: #c0392b;
+        }
+        .edit-btn {
+            background-color: #f39c12;
+        }
+        .edit-btn:hover {
+            background-color: #d35400;
+        }
+        .clear-btn {
+            background-color: #e67e22;
+            margin-left: 10px;
+        }
+        .clear-btn:hover {
+            background-color: #d35400;
+        }
+        #editForm {
+            display: none;
+        }
+        .age-container {
+            display: flex;
+            gap: 10px;
+        }
+        .age-container input, .age-container select {
+            width: auto;
         }
     </style>
 </head>
 <body>
-    <h1>Mental Health Questionnaires</h1>
-    <div id="patientInfo">
-        <input type="text" id="patientName" placeholder="Patient Name">
-        <input type="number" id="patientAge" placeholder="Patient Age">
-        <div id="currentDate"></div>
+    <h1>Prescription Form</h1>
+    
+    <form id="patientForm">
+        <label for="patientName">Patient Name:</label>
+        <input type="text" id="patientName" required>
+        
+        <label for="patientAge">Patient Age:</label>
+        <div class="age-container">
+            <input type="number" id="patientAge" required>
+            <select id="ageUnit" required>
+                <option value="years">Years</option>
+                <option value="months">Months</option>
+                <option value="days">Days</option>
+            </select>
+        </div>
+        
+        <label for="patientSex">Patient Sex:</label>
+        <select id="patientSex" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+        
+        <label for="patientAddress">Patient Address (optional):</label>
+        <textarea id="patientAddress" rows="3"></textarea>
+        
+        <label for="patientPhone">Patient Phone (optional):</label>
+        <input type="tel" id="patientPhone">
+        
+        <h2>Medication</h2>
+        <label for="medName">Medication Name:</label>
+        <input type="text" id="medName" required>
+        
+        <label for="medDosePotency">Dose/Potency:</label>
+        <input type="text" id="medDosePotency" required>
+        
+        <label for="medFrequency">Repetition:</label>
+        <input type="text" id="medFrequency" required>
+        
+        <label for="medDuration">Duration:</label>
+        <input type="text" id="medDuration" required>
+        
+        <button type="button" onclick="addMedication()">Add Medication</button>
+        <button type="button" class="clear-btn" onclick="clearAllMedications()">Clear All Medicines</button>
+    </form>
+    
+    <div id="editForm">
+        <h2>Edit Medication</h2>
+        <input type="hidden" id="editIndex">
+        <label for="editMedName">Medication Name:</label>
+        <input type="text" id="editMedName" required>
+        
+        <label for="editMedDosePotency">Dose/Potency:</label>
+        <input type="text" id="editMedDosePotency" required>
+        
+        <label for="editMedFrequency">Repetition:</label>
+        <input type="text" id="editMedFrequency" required>
+        
+        <label for="editMedDuration">Duration:</label>
+        <input type="text" id="editMedDuration" required>
+        
+        <button type="button" onclick="saveEditMedication()">Save Changes</button>
+        <button type="button" onclick="cancelEdit()">Cancel</button>
     </div>
-    <select id="questionnaireSelect">
-        <option value="">Select a questionnaire</option>
-        <option value="phq9">PHQ-9 (Depression)</option>
-        <option value="gad7">GAD-7 (Anxiety)</option>
-    </select>
-    <div id="questionnaireContainer"></div>
-    <button id="submitBtn" style="display:none;">Submit</button>
-    <div id="result"></div>
-    <button id="printBtn">Print</button>
-    <button id="clearBtn">Clear Form</button>
-
-    <footer>
-        DEVELOPED BY Dr. Archit K. Mehta
-    </footer>
+    
+    <div id="medicationList"></div>
+    
+    <button onclick="printPrescription()">Print Prescription</button>
 
     <script>
-        const phq9Questions = [
-            "Little interest or pleasure in doing things",
-            "Feeling down, depressed, or hopeless",
-            "Trouble falling or staying asleep, or sleeping too much",
-            "Feeling tired or having little energy",
-            "Poor appetite or overeating",
-            "Feeling bad about yourself or that you are a failure or have let yourself or your family down",
-            "Trouble concentrating on things, such as reading the newspaper or watching television",
-            "Moving or speaking so slowly that other people could have noticed. Or the opposite being so fidgety or restless that you have been moving around a lot more than usual",
-            "Thoughts that you would be better off dead, or of hurting yourself"
-        ];
+        let medications = [];
 
-        const gad7Questions = [
-            "Feeling nervous, anxious, or on edge",
-            "Not being able to stop or control worrying",
-            "Worrying too much about different things",
-            "Trouble relaxing",
-            "Being so restless that it is hard to sit still",
-            "Becoming easily annoyed or irritable",
-            "Feeling afraid, as if something awful might happen"
-        ];
+        function addMedication() {
+            const name = document.getElementById('medName').value;
+            const dosePotency = document.getElementById('medDosePotency').value;
+            const frequency = document.getElementById('medFrequency').value;
+            const duration = document.getElementById('medDuration').value;
 
-        const options = ["Not at all", "Several days", "More than half the days", "Nearly every day"];
-
-        function createQuestionnaire(questions) {
-            const container = document.getElementById('questionnaireContainer');
-            container.innerHTML = '';
-            questions.forEach((q, index) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'question';
-                questionDiv.innerHTML = `
-                    <p>${index + 1}. ${q}</p>
-                    ${options.map((option, i) => `
-                        <input type="radio" name="q${index}" value="${i}" id="q${index}o${i}">
-                        <label for="q${index}o${i}">${option}</label>
-                    `).join('')}
-                `;
-                container.appendChild(questionDiv);
-            });
-            document.getElementById('submitBtn').style.display = 'block';
-        }
-
-        function calculateScore() {
-            const questions = document.querySelectorAll('.question');
-            let total = 0;
-            questions.forEach(q => {
-                const selected = q.querySelector('input:checked');
-                if (selected) {
-                    total += parseInt(selected.value);
-                }
-            });
-            return total;
-        }
-
-        function interpretPHQ9(score) {
-            if (score >= 20) return "Severe depression";
-            if (score >= 15) return "Moderately severe depression";
-            if (score >= 10) return "Moderate depression";
-            if (score >= 5) return "Mild depression";
-            return "Minimal depression";
-        }
-
-        function interpretGAD7(score) {
-            if (score >= 15) return "Severe anxiety";
-            if (score >= 10) return "Moderate anxiety";
-            if (score >= 5) return "Mild anxiety";
-            return "Minimal anxiety";
-        }
-
-        document.getElementById('questionnaireSelect').addEventListener('change', function() {
-            const selected = this.value;
-            if (selected === 'phq9') {
-                createQuestionnaire(phq9Questions);
-            } else if (selected === 'gad7') {
-                createQuestionnaire(gad7Questions);
+            if (name && dosePotency && frequency && duration) {
+                medications.push({ name, dosePotency, frequency, duration });
+                updateMedicationList();
+                clearMedicationInputs();
             } else {
-                document.getElementById('questionnaireContainer').innerHTML = '';
-                document.getElementById('submitBtn').style.display = 'none';
+                alert('Please fill all medication fields');
             }
-        });
+        }
 
-        document.getElementById('submitBtn').addEventListener('click', function() {
-            const score = calculateScore();
-            const selected = document.getElementById('questionnaireSelect').value;
-            let interpretation = '';
-            if (selected === 'phq9') {
-                interpretation = interpretPHQ9(score);
-            } else if (selected === 'gad7') {
-                interpretation = interpretGAD7(score);
+        function updateMedicationList() {
+            const list = document.getElementById('medicationList');
+            list.innerHTML = '<h3>Current Medications:</h3>';
+            list.innerHTML += '<table><tr><th>MEDICINE</th><th>REPETITION</th><th>DURATION</th><th>ACTION</th></tr>';
+            medications.forEach((med, index) => {
+                list.innerHTML += `
+                    <tr>
+                        <td>${med.name} ${med.dosePotency}</td>
+                        <td>${med.frequency}</td>
+                        <td>${med.duration}</td>
+                        <td>
+                            <button class="edit-btn" onclick="editMedication(${index})">Edit</button>
+                            <button class="remove-btn" onclick="removeMedication(${index})">Remove</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            list.innerHTML += '</table>';
+        }
+
+        function clearMedicationInputs() {
+            document.getElementById('medName').value = '';
+            document.getElementById('medDosePotency').value = '';
+            document.getElementById('medFrequency').value = '';
+            document.getElementById('medDuration').value = '';
+        }
+
+        function removeMedication(index) {
+            medications.splice(index, 1);
+            updateMedicationList();
+        }
+
+        function clearAllMedications() {
+            medications = [];
+            updateMedicationList();
+        }
+
+        function editMedication(index) {
+            const med = medications[index];
+            document.getElementById('editIndex').value = index;
+            document.getElementById('editMedName').value = med.name;
+            document.getElementById('editMedDosePotency').value = med.dosePotency;
+            document.getElementById('editMedFrequency').value = med.frequency;
+            document.getElementById('editMedDuration').value = med.duration;
+            document.getElementById('editForm').style.display = 'block';
+        }
+
+        function saveEditMedication() {
+            const index = document.getElementById('editIndex').value;
+            medications[index] = {
+                name: document.getElementById('editMedName').value,
+                dosePotency: document.getElementById('editMedDosePotency').value,
+                frequency: document.getElementById('editMedFrequency').value,
+                duration: document.getElementById('editMedDuration').value
+            };
+            updateMedicationList();
+            cancelEdit();
+        }
+
+        function cancelEdit() {
+            document.getElementById('editForm').style.display = 'none';
+        }
+
+        function printPrescription() {
+            const patientName = document.getElementById('patientName').value;
+            const patientAge = document.getElementById('patientAge').value;
+            const ageUnit = document.getElementById('ageUnit').value;
+            const patientSex = document.getElementById('patientSex').value;
+            const patientAddress = document.getElementById('patientAddress').value;
+            const patientPhone = document.getElementById('patientPhone').value;
+
+            if (!patientName || !patientAge || !patientSex) {
+                alert('Please fill in all required patient details');
+                return;
             }
-            document.getElementById('result').textContent = `Score: ${score}. Interpretation: ${interpretation}`;
-        });
 
-        document.getElementById('printBtn').addEventListener('click', function() {
-            const currentDate = new Date().toLocaleDateString();
-            document.getElementById('currentDate').textContent = `Date: ${currentDate}`;
-            window.print();
-        });
+            if (medications.length === 0) {
+                alert('Please add at least one medication');
+                return;
+            }
 
-        document.getElementById('clearBtn').addEventListener('click', function() {
-            document.getElementById('patientName').value = '';
-            document.getElementById('patientAge').value = '';
-            document.getElementById('questionnaireSelect').selectedIndex = 0;
-            document.getElementById('questionnaireContainer').innerHTML = '';
-            document.getElementById('result').textContent = '';
-            document.getElementById('submitBtn').style.display = 'none';
-            document.getElementById('currentDate').textContent = '';
-        });
+            const currentDate = new Date();
+            const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+            let printContent = `
+                <html>
+                <head>
+                    <title>Prescription</title>
+                    <style>
+                        body { 
+                            font-family: 'Arial', sans-serif; 
+                            padding: 40px; 
+                            color: #333;
+                            background-color: #f9f9f9;
+                        }
+                        .prescription {
+                            background-color: white;
+                            padding: 30px;
+                            border-radius: 10px;
+                            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+                        }
+                        h1 { 
+                            color: #2c3e50;
+                            border-bottom: 2px solid #3498db;
+                            padding-bottom: 10px;
+                        }
+                        table { 
+                            width: 100%; 
+                            border-collapse: collapse; 
+                            margin-top: 20px;
+                        }
+                        th, td { 
+                            border: 1px solid #ddd; 
+                            padding: 12px; 
+                            text-align: left; 
+                        }
+                        th { 
+                            background-color: #3498db; 
+                            color: white; 
+                        }
+                        .signature {
+                            margin-top: 50px;
+                            border-top: 1px solid #333;
+                            padding-top: 10px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="prescription">
+                        <h1>Prescription</h1>
+                        <p><strong>Date:</strong> ${formattedDate}</p>
+                        <p><strong>Patient Name:</strong> ${patientName}</p>
+                        <p><strong>Age:</strong> ${patientAge} ${ageUnit} &nbsp;&nbsp;&nbsp; <strong>Sex:</strong> ${patientSex}</p>
+            `;
+
+            if (patientAddress) {
+                printContent += `<p><strong>Address:</strong> ${patientAddress}</p>`;
+            }
+
+            if (patientPhone) {
+                printContent += `<p><strong>Phone:</strong> ${patientPhone}</p>`;
+            }
+
+            printContent += `
+                        <h2>Medications:</h2>
+                        <table>
+                            <tr>
+                                <th>MEDICINE</th>
+                                <th>REPETITION</th>
+                                <th>DURATION</th>
+                            </tr>
+            `;
+
+            medications.forEach((med) => {
+                printContent += `
+                    <tr>
+                        <td>${med.name} ${med.dosePotency}</td>
+                        <td>${med.frequency}</td>
+                        <td>${med.duration}</td>
+                    </tr>
+                `;
+            });
+
+            printContent += `
+                        </table>
+                        <div class="signature">
+                            <p>Doctor's Signature: _________________________</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
     </script>
 </body>
 </html>
