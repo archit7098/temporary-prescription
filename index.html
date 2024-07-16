@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription Form</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f4f8;
+            color: #333;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #medicationList {
+            margin-top: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .remove-btn {
+            background-color: #e74c3c;
+            padding: 5px 10px;
+            font-size: 0.8em;
+        }
+        .remove-btn:hover {
+            background-color: #c0392b;
+        }
+        .clear-btn {
+            background-color: #e67e22;
+            margin-left: 10px;
+        }
+        .clear-btn:hover {
+            background-color: #d35400;
+        }
+    </style>
+</head>
+<body>
+    <h1>Prescription Form</h1>
+    
+    <form id="patientForm">
+        <label for="patientName">Patient Name:</label>
+        <input type="text" id="patientName" required>
+        
+        <label for="patientAge">Patient Age:</label>
+        <input type="number" id="patientAge" required>
+        
+        <label for="patientSex">Patient Sex:</label>
+        <select id="patientSex" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+        
+        <label for="patientAddress">Patient Address (optional):</label>
+        <textarea id="patientAddress" rows="3"></textarea>
+        
+        <h2>Medication</h2>
+        <label for="medName">Medication Name:</label>
+        <input type="text" id="medName" required>
+        
+        <label for="medDosePotency">Dose/Potency:</label>
+        <input type="text" id="medDosePotency" required>
+        
+        <label for="medFrequency">Repetition:</label>
+        <input type="text" id="medFrequency" required>
+        
+        <label for="medDuration">Duration:</label>
+        <input type="text" id="medDuration" required>
+        
+        <button type="button" onclick="addMedication()">Add Medication</button>
+        <button type="button" class="clear-btn" onclick="clearAllMedications()">Clear All Medicines</button>
+    </form>
+    
+    <div id="medicationList"></div>
+    
+    <button onclick="printPrescription()">Print Prescription</button>
+
+    <script>
+        let medications = [];
+
+        function addMedication() {
+            const name = document.getElementById('medName').value;
+            const dosePotency = document.getElementById('medDosePotency').value;
+            const frequency = document.getElementById('medFrequency').value;
+            const duration = document.getElementById('medDuration').value;
+
+            if (name && dosePotency && frequency && duration) {
+                medications.push({ name, dosePotency, frequency, duration });
+                updateMedicationList();
+                clearMedicationInputs();
+            } else {
+                alert('Please fill all medication fields');
+            }
+        }
+
+        function updateMedicationList() {
+            const list = document.getElementById('medicationList');
+            list.innerHTML = '<h3>Current Medications:</h3>';
+            list.innerHTML += '<table><tr><th>MEDICINE</th><th>REPETITION</th><th>DURATION</th><th>ACTION</th></tr>';
+            medications.forEach((med, index) => {
+                list.innerHTML += `
+                    <tr>
+                        <td>${med.name} ${med.dosePotency}</td>
+                        <td>${med.frequency}</td>
+                        <td>${med.duration}</td>
+                        <td><button class="remove-btn" onclick="removeMedication(${index})">Remove</button></td>
+                    </tr>
+                `;
+            });
+            list.innerHTML += '</table>';
+        }
+
+        function clearMedicationInputs() {
+            document.getElementById('medName').value = '';
+            document.getElementById('medDosePotency').value = '';
+            document.getElementById('medFrequency').value = '';
+            document.getElementById('medDuration').value = '';
+        }
+
+        function removeMedication(index) {
+            medications.splice(index, 1);
+            updateMedicationList();
+        }
+
+        function clearAllMedications() {
+            medications = [];
+            updateMedicationList();
+        }
+
+        function printPrescription() {
+            const patientName = document.getElementById('patientName').value;
+            const patientAge = document.getElementById('patientAge').value;
+            const patientSex = document.getElementById('patientSex').value;
+            const patientAddress = document.getElementById('patientAddress').value;
+
+            if (!patientName || !patientAge || !patientSex) {
+                alert('Please fill in all required patient details');
+                return;
+            }
+
+            if (medications.length === 0) {
+                alert('Please add at least one medication');
+                return;
+            }
+
+            const currentDate = new Date();
+            const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+            let printContent = `
+                <html>
+                <head>
+                    <title>Prescription</title>
+                    <style>
+                        body { 
+                            font-family: 'Arial', sans-serif; 
+                            padding: 40px; 
+                            color: #333;
+                            background-color: #f9f9f9;
+                        }
+                        .prescription {
+                            background-color: white;
+                            padding: 30px;
+                            border-radius: 10px;
+                            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+                        }
+                        h1 { 
+                            color: #2c3e50;
+                            border-bottom: 2px solid #3498db;
+                            padding-bottom: 10px;
+                        }
+                        table { 
+                            width: 100%; 
+                            border-collapse: collapse; 
+                            margin-top: 20px;
+                        }
+                        th, td { 
+                            border: 1px solid #ddd; 
+                            padding: 12px; 
+                            text-align: left; 
+                        }
+                        th { 
+                            background-color: #3498db; 
+                            color: white; 
+                        }
+                        .signature {
+                            margin-top: 50px;
+                            border-top: 1px solid #333;
+                            padding-top: 10px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="prescription">
+                        <h1>Prescription</h1>
+                        <p><strong>Date:</strong> ${formattedDate}</p>
+                        <p><strong>Patient Name:</strong> ${patientName}</p>
+                        <p><strong>Age:</strong> ${patientAge} &nbsp;&nbsp;&nbsp; <strong>Sex:</strong> ${patientSex}</p>
+            `;
+
+            if (patientAddress) {
+                printContent += `<p><strong>Address:</strong> ${patientAddress}</p>`;
+            }
+
+            printContent += `
+                        <h2>Medications:</h2>
+                        <table>
+                            <tr>
+                                <th>MEDICINE</th>
+                                <th>REPETITION</th>
+                                <th>DURATION</th>
+                            </tr>
+            `;
+
+            medications.forEach((med) => {
+                printContent += `
+                    <tr>
+                        <td>${med.name} ${med.dosePotency}</td>
+                        <td>${med.frequency}</td>
+                        <td>${med.duration}</td>
+                    </tr>
+                `;
+            });
+
+            printContent += `
+                        </table>
+                        <div class="signature">
+                            <p>Doctor's Signature: _________________________</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            const printWindow = window.open('', '_blank');
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.print();
+        }
+    </script>
+</body>
+</html>
