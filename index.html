@@ -170,6 +170,30 @@
         border-radius: 4px;
         width: 100%;
     }
+     .qr-section {
+            margin-top: 20px;
+            text-align: center;
+            page-break-inside: avoid;
+        }
+        
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .qr-details {
+            text-align: left;
+        }
+        
+        .payment-note {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -831,7 +855,9 @@ function printPrescription(type = 'both') {
     }
 
     // Add Billing Section
-    if ((type === 'billing' || type === 'both') && charges.length > 0) {
+        if ((type === 'billing' || type === 'both') && charges.length > 0) {
+        const total = charges.reduce((sum, charge) => sum + charge.amount, 0);
+        
         printContent += `
             <h2>Bill Details</h2>
             <table>
@@ -852,13 +878,28 @@ function printPrescription(type = 'both') {
             `;
         });
 
-        const total = charges.reduce((sum, charge) => sum + charge.amount, 0);
         printContent += `
                 <tr style="font-weight: bold;">
                     <td colspan="2" style="text-align: right">Total Amount:</td>
                     <td style="text-align: right">₹${total.toFixed(2)}</td>
                 </tr>
             </table>
+
+            <div class="qr-section">
+                <h3>Scan to Pay</h3>
+                <div class="qr-container">
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=9408821101@okbizaxis&pn=Dr.%20Archit%20K.%20Mehta&am=${total}&cu=INR" alt="GPAY BUSINESS QR Code">
+                    <div class="qr-details">
+                        <p><strong>UPI ID:</strong> 9408821101@okbizaxis</p>
+                        <p><strong>Account Name:</strong> Dr. Archit K. Mehta</p>
+                        <p><strong>Amount:</strong> ₹${total.toFixed(2)}</p>
+                    </div>
+                </div>
+                <div class="payment-note">
+                    <p>Please scan the QR code to make the payment via UPI</p>
+                    <p>After payment, please share the screenshot with us for our records</p>
+                </div>
+            </div>
         `;
     }
 
