@@ -430,6 +430,55 @@ function openTab(tabName) {
 }
 
 // Medication functions
+function autofillMedicineBill() {
+    // Check if a medicine charge has already been added to the bill. If so, do nothing.
+    const medicineChargeExists = charges.some(charge => charge.type === 'medicine');
+    if (medicineChargeExists) {
+        return;
+    }
+
+    if (medications.length === 0) {
+        const chargeTypeSelect = document.getElementById('chargeType');
+        // If medicine is selected in the form but all medicines are removed, reset the form.
+        if (chargeTypeSelect.value === 'medicine') {
+            chargeTypeSelect.value = '';
+            updateDescriptionOptions();
+        }
+        return;
+    }
+
+    let maxDays = 0;
+    medications.forEach(med => {
+        const daysMatch = med.duration.match(/\d+/);
+        const currentDays = daysMatch ? parseInt(daysMatch[0], 10) : 0;
+        if (currentDays > maxDays) {
+            maxDays = currentDays;
+        }
+    });
+
+    if (maxDays > 0) {
+        const durations = [7, 10, 15, 20, 30];
+        // Find the smallest duration option that is >= maxDays
+        let selectedDuration = durations.find(d => d >= maxDays);
+
+        // If maxDays is greater than the largest option, default to the largest.
+        if (!selectedDuration) {
+            selectedDuration = 30;
+        }
+        
+        // Set the billing form to 'Medicine' and the calculated duration
+        const chargeTypeSelect = document.getElementById('chargeType');
+        chargeTypeSelect.value = 'medicine';
+        updateDescriptionOptions(); // This is crucial to run first to populate the next dropdown
+
+        const chargeDescriptionSelect = document.getElementById('chargeDescription');
+        if (chargeDescriptionSelect) {
+            chargeDescriptionSelect.value = `${selectedDuration}days`;
+        }
+    }
+}
+
+
 function addMedication() {
     const name = document.getElementById('medName').value;
     const dosePotency = document.getElementById('medDosePotency').value;
@@ -440,6 +489,7 @@ function addMedication() {
         medications.push({ name, dosePotency, frequency, duration });
         updateMedicationList();
         clearMedicationInputs();
+        autofillMedicineBill(); // Autofill billing form
     } else {
         alert('Please fill all medication fields');
     }
@@ -480,6 +530,7 @@ function clearMedicationInputs() {
 function removeMedication(index) {
     medications.splice(index, 1);
     updateMedicationList();
+    autofillMedicineBill(); // Re-evaluate billing form
 }
 
 function editMedication(index) {
@@ -502,11 +553,13 @@ function saveEditMedication() {
     };
     updateMedicationList();
     cancelEdit('editForm');
+    autofillMedicineBill(); // Re-evaluate billing form
 }
 
 function clearAllMedications() {
     medications = [];
     updateMedicationList();
+    autofillMedicineBill(); // Re-evaluate billing form
 }
 
 // Lab test functions
@@ -745,14 +798,22 @@ function clearBillingInputs() {
 }
 
 function removeCharge(index) {
+    const removedChargeType = charges[index].type;
     charges.splice(index, 1);
     updateBillingList();
+    if (removedChargeType === 'medicine') {
+        autofillMedicineBill();
+    }
 }
 
 function clearAllCharges() {
+    const hadMedicineCharge = charges.some(c => c.type === 'medicine');
     charges = [];
     removeDiscount(); // Also clears discount
     updateBillingList();
+    if(hadMedicineCharge) {
+        autofillMedicineBill();
+    }
 }
 
 // Generic functions
@@ -783,7 +844,7 @@ function printPrescription(type = 'both') {
         alert('Please add at least one lab test');
         return;
     }
-    if (type === 'billing' && charges.length === 0) {
+     if (type === 'billing' && charges.length === 0) {
         alert('Please add at least one charge');
         return;
     }
@@ -899,12 +960,17 @@ function printPrescription(type = 'both') {
                     border-radius: 5px;
                 }
                 .patient-info p { margin: 5px 0; }
-                .bill-summary tr:last-child td {
+                .bill-summary .grand-total-row td {
                     font-weight: bold;
                     font-size: 1.2em;
                     background-color: #e8f4f8;
                     padding-top: 15px;
                     padding-bottom: 15px;
+                }
+                .bill-summary .category-header td {
+                    background-color: #f2f8fc;
+                    font-weight: bold;
+                    color: #2c3e50;
                 }
                 @media print {
                     body { padding: 0; }
@@ -917,7 +983,6 @@ function printPrescription(type = 'both') {
                  <div class="header">
                     <h1>Dr. Archit K. Mehta</h1>
                     <p>BHMS; MD (Hom.) Psychiatry (scholar)</p>
-                    <p> Reg no. G28256 </p>
                 </div>
                 <div class="content-body">
                 <h1 class="document-title">${title}</h1>
@@ -986,7 +1051,7 @@ function printPrescription(type = 'both') {
     }
 
     // Add Billing Section
-        if ((type === 'billing' || type === 'both') && charges.length > 0) {
+    if ((type === 'billing' || type === 'both') && charges.length > 0) {
         const subtotal = charges.reduce((sum, charge) => sum + charge.amount, 0);
         const discountAmount = parseFloat(document.getElementById('discountAmount').value) || 0;
         const discountReason = document.getElementById('discountReason').value;
@@ -1002,7 +1067,14 @@ function printPrescription(type = 'both') {
                 </tr>
         `;
 
-        charges.forEach((charge) => {
+        const categoryOrder = ['consultation', 'medicine', 'others', 'courier'];
+        const sortedCharges = [];
+        categoryOrder.forEach(category => {
+            const categoryCharges = charges.filter(charge => charge.type === category);
+            sortedCharges.push(...categoryCharges);
+        });
+
+        sortedCharges.forEach((charge) => {
             printContent += `
                 <tr>
                     <td>${charge.type.charAt(0).toUpperCase() + charge.type.slice(1)}</td>
@@ -1012,8 +1084,7 @@ function printPrescription(type = 'both') {
             `;
         });
 
-        // Add discount to print if it exists
-        if(discountAmount > 0) {
+        if (discountAmount > 0) {
              printContent += `
                 <tr style="font-weight: bold;">
                     <td colspan="2" style="text-align: right">Subtotal:</td>
@@ -1027,7 +1098,7 @@ function printPrescription(type = 'both') {
         }
 
         printContent += `
-                <tr class="grand-total">
+                <tr class="grand-total-row">
                     <td colspan="2" style="text-align: right;">${discountAmount > 0 ? 'Grand Total:' : 'Total Amount:'}</td>
                     <td style="text-align: right;">₹${grandTotal.toFixed(2)}</td>
                 </tr>
@@ -1085,3 +1156,4 @@ window.onload = function() {
     </script>
 </body>
 </html>
+
