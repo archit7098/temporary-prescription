@@ -218,6 +218,10 @@
         #discountSection input {
             margin-top: 5px;
         }
+        .custom-input {
+            margin-top: 5px;
+            display: none; /* Hidden by default */
+        }
     </style>
 </head>
 <body>
@@ -266,14 +270,56 @@
             <label for="medName">Medication Name:</label>
             <input type="text" id="medName" required>
             
-            <label for="medDosePotency">Dose/Potency:</label>
-            <input type="text" id="medDosePotency" required>
-            
-            <label for="medFrequency">Repetition:</label>
-            <input type="text" id="medFrequency" required>
-            
-            <label for="medDuration">Duration:</label>
-            <input type="text" id="medDuration" required>
+            <label for="medDosePotencySelect">Dose/Potency:</label>
+            <div class="custom-select-container">
+                <select id="medDosePotencySelect" onchange="toggleCustomInput(this, 'medDosePotencyCustom')">
+                    <option value="1X">1X</option>
+                    <option value="2X">2X</option>
+                    <option value="3X">3X</option>
+                    <option value="6X">6X</option>
+                    <option value="30">30</option>
+                    <option value="200">200</option>
+                    <option value="1M">1M</option>
+                    <option value="10M">10M</option>
+                    <option value="50M">50M</option>
+                    <option value="CM">CM</option>
+                    <option value="0/1">0/1</option>
+                    <option value="0/3">0/3</option>
+                    <option value="custom">Other</option>
+                </select>
+                <input type="text" id="medDosePotencyCustom" class="custom-input" placeholder="Enter custom dose/potency">
+            </div>
+
+            <label for="medFrequencySelect">Repetition:</label>
+            <div class="custom-select-container">
+                <select id="medFrequencySelect" onchange="toggleCustomInput(this, 'medFrequencyCustom')">
+                    <option value="Single dose">Single dose</option>
+                    <option value="2 doses">2 doses</option>
+                    <option value="4 doses">4 doses</option>
+                    <option value="2-0-0">2-0-0</option>
+                    <option value="2-2-2">2-2-2</option>
+                    <option value="0-0-2">0-0-2</option>
+                    <option value="custom">Other</option>
+                </select>
+                <input type="text" id="medFrequencyCustom" class="custom-input" placeholder="Enter custom repetition">
+            </div>
+
+            <label for="medDurationSelect">Duration:</label>
+            <div class="custom-select-container">
+                <select id="medDurationSelect" onchange="toggleCustomInput(this, 'medDurationCustom')">
+                    <option value="M">M</option>
+                    <option value="N">N</option>
+                    <option value="7th day M">7th day M</option>
+                    <option value="7th Day N">7th Day N</option>
+                    <option value="7 days">7 days</option>
+                    <option value="10 days">10 days</option>
+                    <option value="15 days">15 days</option>
+                    <option value="20 days">20 days</option>
+                    <option value="30 days">30 days</option>
+                    <option value="custom">Other</option>
+                </select>
+                <input type="text" id="medDurationCustom" class="custom-input" placeholder="Enter custom duration">
+            </div>
             
             <button type="button" onclick="addMedication()">Add Medication</button>
             <button type="button" class="clear-btn" onclick="clearAllMedications()">Clear All Medicines</button>
@@ -368,14 +414,56 @@
         <label for="editMedName">Medication Name:</label>
         <input type="text" id="editMedName" required>
         
-        <label for="editMedDosePotency">Dose/Potency:</label>
-        <input type="text" id="editMedDosePotency" required>
-        
-        <label for="editMedFrequency">Repetition:</label>
-        <input type="text" id="editMedFrequency" required>
-        
-        <label for="editMedDuration">Duration:</label>
-        <input type="text" id="editMedDuration" required>
+        <label for="editMedDosePotencySelect">Dose/Potency:</label>
+        <div class="custom-select-container">
+            <select id="editMedDosePotencySelect" onchange="toggleCustomInput(this, 'editMedDosePotencyCustom')">
+                <option value="1X">1X</option>
+                <option value="2X">2X</option>
+                <option value="3X">3X</option>
+                <option value="6X">6X</option>
+                <option value="30">30</option>
+                <option value="200">200</option>
+                <option value="1M">1M</option>
+                <option value="10M">10M</option>
+                <option value="50M">50M</option>
+                <option value="CM">CM</option>
+                <option value="0/1">0/1</option>
+                <option value="0/3">0/3</option>
+                <option value="custom">Other</option>
+            </select>
+            <input type="text" id="editMedDosePotencyCustom" class="custom-input" placeholder="Enter custom dose/potency">
+        </div>
+
+        <label for="editMedFrequencySelect">Repetition:</label>
+        <div class="custom-select-container">
+            <select id="editMedFrequencySelect" onchange="toggleCustomInput(this, 'editMedFrequencyCustom')">
+                <option value="Single dose">Single dose</option>
+                <option value="2 doses">2 doses</option>
+                <option value="4 doses">4 doses</option>
+                <option value="2-0-0">2-0-0</option>
+                <option value="2-2-2">2-2-2</option>
+                <option value="0-0-2">0-0-2</option>
+                <option value="custom">Other</option>
+            </select>
+            <input type="text" id="editMedFrequencyCustom" class="custom-input" placeholder="Enter custom repetition">
+        </div>
+
+        <label for="editMedDurationSelect">Duration:</label>
+        <div class="custom-select-container">
+            <select id="editMedDurationSelect" onchange="toggleCustomInput(this, 'editMedDurationCustom')">
+                <option value="M">M</option>
+                <option value="N">N</option>
+                <option value="7th day M">7th day M</option>
+                <option value="7th Day N">7th Day N</option>
+                <option value="7 days">7 days</option>
+                <option value="10 days">10 days</option>
+                <option value="15 days">15 days</option>
+                <option value="20 days">20 days</option>
+                <option value="30 days">30 days</option>
+                <option value="custom">Other</option>
+            </select>
+            <input type="text" id="editMedDurationCustom" class="custom-input" placeholder="Enter custom duration">
+        </div>
         
         <button type="button" onclick="saveEditMedication()">Save Changes</button>
         <button type="button" onclick="cancelEdit('editForm')">Cancel</button>
@@ -430,6 +518,53 @@ function openTab(tabName) {
 }
 
 // Medication functions
+
+// Helper function to show/hide custom input fields for selects
+function toggleCustomInput(selectElement, customInputId) {
+    const customInput = document.getElementById(customInputId);
+    if (selectElement.value === 'custom') {
+        customInput.style.display = 'block';
+    } else {
+        customInput.style.display = 'none';
+        customInput.value = ''; // Clear the custom input when another option is selected
+    }
+}
+
+// Helper function to get the value from a select or its custom input
+function getCustomSelectValue(selectId, customInputId) {
+    const select = document.getElementById(selectId);
+    if (select.value === 'custom') {
+        return document.getElementById(customInputId).value;
+    }
+    return select.value;
+}
+
+// Helper function to set the value for a select or its custom input
+function setCustomSelectValue(selectId, customInputId, value) {
+    const select = document.getElementById(selectId);
+    const customInput = document.getElementById(customInputId);
+    let isCustom = true;
+
+    // Check if the value exists in the select options
+    for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].value === value) {
+            select.value = value;
+            isCustom = false;
+            break;
+        }
+    }
+
+    // If it's a custom value, set select to 'custom' and show/fill the input
+    if (isCustom) {
+        select.value = 'custom';
+        customInput.value = value;
+        customInput.style.display = 'block';
+    } else {
+        customInput.value = '';
+        customInput.style.display = 'none';
+    }
+}
+
 function autofillMedicineBill() {
     // Check if a medicine charge has already been added to the bill. If so, do nothing.
     const medicineChargeExists = charges.some(charge => charge.type === 'medicine');
@@ -481,9 +616,9 @@ function autofillMedicineBill() {
 
 function addMedication() {
     const name = document.getElementById('medName').value;
-    const dosePotency = document.getElementById('medDosePotency').value;
-    const frequency = document.getElementById('medFrequency').value;
-    const duration = document.getElementById('medDuration').value;
+    const dosePotency = getCustomSelectValue('medDosePotencySelect', 'medDosePotencyCustom');
+    const frequency = getCustomSelectValue('medFrequencySelect', 'medFrequencyCustom');
+    const duration = getCustomSelectValue('medDurationSelect', 'medDurationCustom');
 
     if (name && dosePotency && frequency && duration) {
         medications.push({ name, dosePotency, frequency, duration });
@@ -503,11 +638,12 @@ function updateMedicationList() {
     }
     
     list.innerHTML = '<h3>Current Medications:</h3>';
-    list.innerHTML += '<table><tr><th>MEDICINE</th><th>REPETITION</th><th>DURATION</th><th>ACTION</th></tr>';
+    list.innerHTML += '<table><tr><th>MEDICINE</th><th>DOSE/POTENCY</th><th>REPETITION</th><th>DURATION</th><th>ACTION</th></tr>';
     medications.forEach((med, index) => {
         list.innerHTML += `
             <tr>
-                <td>${med.name} ${med.dosePotency}</td>
+                <td>${med.name}</td>
+                <td>${med.dosePotency}</td>
                 <td>${med.frequency}</td>
                 <td>${med.duration}</td>
                 <td>
@@ -522,9 +658,18 @@ function updateMedicationList() {
 
 function clearMedicationInputs() {
     document.getElementById('medName').value = '';
-    document.getElementById('medDosePotency').value = '';
-    document.getElementById('medFrequency').value = '';
-    document.getElementById('medDuration').value = '';
+    
+    const doseSelect = document.getElementById('medDosePotencySelect');
+    doseSelect.selectedIndex = 0;
+    toggleCustomInput(doseSelect, 'medDosePotencyCustom');
+
+    const freqSelect = document.getElementById('medFrequencySelect');
+    freqSelect.selectedIndex = 0;
+    toggleCustomInput(freqSelect, 'medFrequencyCustom');
+    
+    const durSelect = document.getElementById('medDurationSelect');
+    durSelect.selectedIndex = 0;
+    toggleCustomInput(durSelect, 'medDurationCustom');
 }
 
 function removeMedication(index) {
@@ -537,19 +682,22 @@ function editMedication(index) {
     const med = medications[index];
     document.getElementById('editIndex').value = index;
     document.getElementById('editMedName').value = med.name;
-    document.getElementById('editMedDosePotency').value = med.dosePotency;
-    document.getElementById('editMedFrequency').value = med.frequency;
-    document.getElementById('editMedDuration').value = med.duration;
+
+    setCustomSelectValue('editMedDosePotencySelect', 'editMedDosePotencyCustom', med.dosePotency);
+    setCustomSelectValue('editMedFrequencySelect', 'editMedFrequencyCustom', med.frequency);
+    setCustomSelectValue('editMedDurationSelect', 'editMedDurationCustom', med.duration);
+
     document.getElementById('editForm').style.display = 'block';
 }
 
 function saveEditMedication() {
     const index = document.getElementById('editIndex').value;
+    
     medications[index] = {
         name: document.getElementById('editMedName').value,
-        dosePotency: document.getElementById('editMedDosePotency').value,
-        frequency: document.getElementById('editMedFrequency').value,
-        duration: document.getElementById('editMedDuration').value
+        dosePotency: getCustomSelectValue('editMedDosePotencySelect', 'editMedDosePotencyCustom'),
+        frequency: getCustomSelectValue('editMedFrequencySelect', 'editMedFrequencyCustom'),
+        duration: getCustomSelectValue('editMedDurationSelect', 'editMedDurationCustom')
     };
     updateMedicationList();
     cancelEdit('editForm');
@@ -982,7 +1130,7 @@ function printPrescription(type = 'both') {
             <div class="prescription-container">
                  <div class="header">
                     <h1>Dr. Archit K. Mehta</h1>
-                    <p>BHMS; MD (Hom.) Psychiatry (scholar)</p>
+                    <p>BHMS; MD(Hom.) Psychiatry (scholar)</p>
                 </div>
                 <div class="content-body">
                 <h1 class="document-title">${title}</h1>
@@ -1007,6 +1155,7 @@ function printPrescription(type = 'both') {
             <table>
                 <tr>
                     <th>MEDICINE</th>
+                    <th>DOSE/POTENCY</th>
                     <th>REPETITION</th>
                     <th>DURATION</th>
                 </tr>
@@ -1015,7 +1164,8 @@ function printPrescription(type = 'both') {
         medications.forEach((med) => {
             printContent += `
                 <tr>
-                    <td>${med.name} ${med.dosePotency}</td>
+                    <td>${med.name}</td>
+                    <td>${med.dosePotency}</td>
                     <td>${med.frequency}</td>
                     <td>${med.duration}</td>
                 </tr>
