@@ -362,6 +362,7 @@
                     <select id="chargeType" onchange="updateDescriptionOptions()" required>
                         <option value="">Select Type</option>
                         <option value="consultation">Consultation</option>
+                        <option value="counselling">Counselling</option>
                         <option value="medicine">Medicine</option>
                         <option value="courier">Courier</option>
                         <option value="others">Others</option>
@@ -802,6 +803,20 @@ function updateDescriptionOptions() {
             `;
             break;
             
+        case 'counselling':
+            descriptionContainer.innerHTML = `
+                <select id="chargeDescription" required>
+                    <option value="">Select Duration</option>
+                    <option value="30min">30 Minutes</option>
+                    <option value="1hr">1 Hour</option>
+                    <option value="1.5hr">1.5 Hours</option>
+                    <option value="2hr">2 Hours</option>
+                    <option value="2.5hr">2.5 Hours</option>
+                    <option value="3hr">3 Hours</option>
+                </select>
+            `;
+            break;
+            
         case 'medicine':
             descriptionContainer.innerHTML = `
                 <select id="chargeDescription" required>
@@ -891,6 +906,12 @@ function getFormattedDescription(desc) {
     const descriptions = {
         'new': 'New Consultation',
         'followup': 'Follow Up',
+        '30min': '30 Minutes Counselling',
+        '1hr': '1 Hour Counselling',
+        '1.5hr': '1.5 Hours Counselling',
+        '2hr': '2 Hours Counselling',
+        '2.5hr': '2.5 Hours Counselling',
+        '3hr': '3 Hours Counselling',
         'gujarat': 'In Gujarat',
         'outside': 'Outside Gujarat',
         '7days': '7 Days Medicine',
@@ -1120,6 +1141,10 @@ function printPrescription(type = 'both') {
                     font-weight: bold;
                     color: #2c3e50;
                 }
+                .sr-no-col {
+                    width: 50px;
+                    text-align: center;
+                }
                 @media print {
                     body { padding: 0; }
                     .prescription-container { border: none; box-shadow: none; border-radius: 0; }
@@ -1130,7 +1155,7 @@ function printPrescription(type = 'both') {
             <div class="prescription-container">
                  <div class="header">
                     <h1>Dr. Archit K. Mehta</h1>
-                    <p>BHMS; MD(Hom.) Psychiatry (scholar)</p>
+                    <p>M.D. | General Physician</p>
                 </div>
                 <div class="content-body">
                 <h1 class="document-title">${title}</h1>
@@ -1154,6 +1179,7 @@ function printPrescription(type = 'both') {
             <h2>Medications</h2>
             <table>
                 <tr>
+                    <th class="sr-no-col">SR. NO.</th>
                     <th>MEDICINE</th>
                     <th>DOSE/POTENCY</th>
                     <th>REPETITION</th>
@@ -1161,9 +1187,10 @@ function printPrescription(type = 'both') {
                 </tr>
         `;
 
-        medications.forEach((med) => {
+        medications.forEach((med, index) => {
             printContent += `
                 <tr>
+                    <td class="sr-no-col">${index + 1}</td>
                     <td>${med.name}</td>
                     <td>${med.dosePotency}</td>
                     <td>${med.frequency}</td>
@@ -1181,15 +1208,17 @@ function printPrescription(type = 'both') {
             <h2>Lab Tests</h2>
             <table>
                 <tr>
+                    <th class="sr-no-col">SR. NO.</th>
                     <th>TEST NAME</th>
                     <th>TYPE</th>
                     <th>INSTRUCTIONS</th>
                 </tr>
         `;
 
-        labTests.forEach((test) => {
+        labTests.forEach((test, index) => {
             printContent += `
                 <tr>
+                    <td class="sr-no-col">${index + 1}</td>
                     <td>${test.name}</td>
                     <td>${test.type}</td>
                     <td>${test.instructions || '-'}</td>
@@ -1211,22 +1240,24 @@ function printPrescription(type = 'both') {
             <h2>Bill Details</h2>
             <table class="bill-summary">
                 <tr>
+                    <th class="sr-no-col">SR. NO.</th>
                     <th>TYPE</th>
                     <th>DESCRIPTION</th>
                     <th style="text-align: right;">AMOUNT</th>
                 </tr>
         `;
 
-        const categoryOrder = ['consultation', 'medicine', 'others', 'courier'];
+        const categoryOrder = ['consultation', 'counselling', 'medicine', 'others', 'courier'];
         const sortedCharges = [];
         categoryOrder.forEach(category => {
             const categoryCharges = charges.filter(charge => charge.type === category);
             sortedCharges.push(...categoryCharges);
         });
 
-        sortedCharges.forEach((charge) => {
+        sortedCharges.forEach((charge, index) => {
             printContent += `
                 <tr>
+                    <td class="sr-no-col">${index + 1}</td>
                     <td>${charge.type.charAt(0).toUpperCase() + charge.type.slice(1)}</td>
                     <td>${charge.displayDescription}</td>
                     <td style="text-align: right">₹${charge.amount.toFixed(2)}</td>
@@ -1237,11 +1268,11 @@ function printPrescription(type = 'both') {
         if (discountAmount > 0) {
              printContent += `
                 <tr style="font-weight: bold;">
-                    <td colspan="2" style="text-align: right">Subtotal:</td>
+                    <td colspan="3" style="text-align: right">Subtotal:</td>
                     <td style="text-align: right">₹${subtotal.toFixed(2)}</td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="text-align: right">Discount ${discountReason ? `(${discountReason})` : ''}:</td>
+                    <td colspan="3" style="text-align: right">Discount ${discountReason ? `(${discountReason})` : ''}:</td>
                     <td style="text-align: right">- ₹${discountAmount.toFixed(2)}</td>
                 </tr>
              `;
@@ -1249,7 +1280,7 @@ function printPrescription(type = 'both') {
 
         printContent += `
                 <tr class="grand-total-row">
-                    <td colspan="2" style="text-align: right;">${discountAmount > 0 ? 'Grand Total:' : 'Total Amount:'}</td>
+                    <td colspan="3" style="text-align: right;">${discountAmount > 0 ? 'Grand Total:' : 'Total Amount:'}</td>
                     <td style="text-align: right;">₹${grandTotal.toFixed(2)}</td>
                 </tr>
             </table>
@@ -1306,4 +1337,3 @@ window.onload = function() {
     </script>
 </body>
 </html>
-
