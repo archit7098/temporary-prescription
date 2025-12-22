@@ -795,17 +795,19 @@ function updateDescriptionOptions() {
     switch(chargeType) {
         case 'consultation':
             descriptionContainer.innerHTML = `
-                <select id="chargeDescription" required>
+                <select id="chargeDescription" onchange="toggleCustomInput(this, 'chargeDescriptionCustom')" required>
                     <option value="">Select Description</option>
                     <option value="new">New</option>
                     <option value="followup">Follow Up</option>
+                    <option value="custom">Others</option>
                 </select>
+                <input type="text" id="chargeDescriptionCustom" class="custom-input" placeholder="Enter custom description">
             `;
             break;
             
         case 'counselling':
             descriptionContainer.innerHTML = `
-                <select id="chargeDescription" required>
+                <select id="chargeDescription" onchange="toggleCustomInput(this, 'chargeDescriptionCustom')" required>
                     <option value="">Select Duration</option>
                     <option value="30min">30 Minutes</option>
                     <option value="1hr">1 Hour</option>
@@ -813,30 +815,36 @@ function updateDescriptionOptions() {
                     <option value="2hr">2 Hours</option>
                     <option value="2.5hr">2.5 Hours</option>
                     <option value="3hr">3 Hours</option>
+                    <option value="custom">Others</option>
                 </select>
+                <input type="text" id="chargeDescriptionCustom" class="custom-input" placeholder="Enter custom description">
             `;
             break;
             
         case 'medicine':
             descriptionContainer.innerHTML = `
-                <select id="chargeDescription" required>
+                <select id="chargeDescription" onchange="toggleCustomInput(this, 'chargeDescriptionCustom')" required>
                     <option value="">Select Duration</option>
                     <option value="7days">7 Days</option>
                     <option value="10days">10 Days</option>
                     <option value="15days">15 Days</option>
                     <option value="20days">20 Days</option>
                     <option value="30days">30 Days</option>
+                    <option value="custom">Others</option>
                 </select>
+                <input type="text" id="chargeDescriptionCustom" class="custom-input" placeholder="Enter custom description">
             `;
             break;
             
         case 'courier':
             descriptionContainer.innerHTML = `
-                <select id="chargeDescription" required>
+                <select id="chargeDescription" onchange="toggleCustomInput(this, 'chargeDescriptionCustom')" required>
                     <option value="">Select Location</option>
                     <option value="gujarat">In Gujarat</option>
                     <option value="outside">Outside Gujarat</option>
+                    <option value="custom">Others</option>
                 </select>
+                <input type="text" id="chargeDescriptionCustom" class="custom-input" placeholder="Enter custom description">
             `;
             break;
             
@@ -858,13 +866,22 @@ function updateDescriptionOptions() {
 function addCharge() {
     const type = document.getElementById('chargeType').value;
     const descriptionElement = document.getElementById('chargeDescription');
-    const description = descriptionElement.value;
+    let description;
+    
+    // Check if it's a dropdown (standard types) or simple input (others type)
+    if (descriptionElement.tagName === 'SELECT') {
+        description = getCustomSelectValue('chargeDescription', 'chargeDescriptionCustom');
+    } else {
+        description = descriptionElement.value;
+    }
+
     const amount = document.getElementById('amount').value;
     
     if (type && description && amount) {
         charges.push({ 
             type, 
             description,
+            // If the description matches a key in our map, format it; otherwise use as-is (custom text)
             displayDescription: type === 'others' ? description : getFormattedDescription(description),
             amount: parseFloat(amount) 
         });
