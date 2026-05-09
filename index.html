@@ -173,7 +173,6 @@
         width: 100%;
     }
     
-    /* Add styles for the medicine charges dropdown */
     #medicineDuration {
         padding: 8px;
         border: 1px solid #bdc3c7;
@@ -220,14 +219,13 @@
         }
         .custom-input {
             margin-top: 5px;
-            display: none; /* Hidden by default */
+            display: none; 
         }
     </style>
 </head>
 <body>
     <h1>Prescription & Lab Request Form</h1>
     
-    <!-- Patient Information Section -->
     <form id="patientForm">
         <label for="patientName">Patient Name:</label>
         <input type="text" id="patientName" required>
@@ -256,14 +254,12 @@
         <input type="tel" id="patientPhone">
     </form>
 
-    <!-- Tab Navigation -->
     <div class="tab-container">
         <button class="tab-button active" onclick="openTab('medications')">Medications</button>
         <button class="tab-button" onclick="openTab('labTests')">Lab Tests</button>
         <button class="tab-button" onclick="openTab('billing')">Billing</button>
     </div>
 
-    <!-- Medications Tab -->
     <div id="medicationsTab" class="tab-content active">
         <form id="medicationForm">
             <h2>Add Medication</h2>
@@ -328,7 +324,6 @@
         <div id="medicationList"></div>
     </div>
 
-    <!-- Lab Tests Tab -->
     <div id="labTestsTab" class="tab-content">
         <form id="labForm">
             <h2>Add Lab Test</h2>
@@ -408,7 +403,6 @@
         </div>
     </div>
 
-    <!-- Edit Forms -->
     <div id="editForm">
         <h2>Edit Medication</h2>
         <input type="hidden" id="editIndex">
@@ -520,18 +514,16 @@ function openTab(tabName) {
 
 // Medication functions
 
-// Helper function to show/hide custom input fields for selects
 function toggleCustomInput(selectElement, customInputId) {
     const customInput = document.getElementById(customInputId);
     if (selectElement.value === 'custom') {
         customInput.style.display = 'block';
     } else {
         customInput.style.display = 'none';
-        customInput.value = ''; // Clear the custom input when another option is selected
+        customInput.value = ''; 
     }
 }
 
-// Helper function to get the value from a select or its custom input
 function getCustomSelectValue(selectId, customInputId) {
     const select = document.getElementById(selectId);
     if (select.value === 'custom') {
@@ -540,13 +532,11 @@ function getCustomSelectValue(selectId, customInputId) {
     return select.value;
 }
 
-// Helper function to set the value for a select or its custom input
 function setCustomSelectValue(selectId, customInputId, value) {
     const select = document.getElementById(selectId);
     const customInput = document.getElementById(customInputId);
     let isCustom = true;
 
-    // Check if the value exists in the select options
     for (let i = 0; i < select.options.length; i++) {
         if (select.options[i].value === value) {
             select.value = value;
@@ -555,7 +545,6 @@ function setCustomSelectValue(selectId, customInputId, value) {
         }
     }
 
-    // If it's a custom value, set select to 'custom' and show/fill the input
     if (isCustom) {
         select.value = 'custom';
         customInput.value = value;
@@ -567,7 +556,6 @@ function setCustomSelectValue(selectId, customInputId, value) {
 }
 
 function autofillMedicineBill() {
-    // Check if a medicine charge has already been added to the bill. If so, do nothing.
     const medicineChargeExists = charges.some(charge => charge.type === 'medicine');
     if (medicineChargeExists) {
         return;
@@ -575,7 +563,6 @@ function autofillMedicineBill() {
 
     if (medications.length === 0) {
         const chargeTypeSelect = document.getElementById('chargeType');
-        // If medicine is selected in the form but all medicines are removed, reset the form.
         if (chargeTypeSelect.value === 'medicine') {
             chargeTypeSelect.value = '';
             updateDescriptionOptions();
@@ -594,18 +581,15 @@ function autofillMedicineBill() {
 
     if (maxDays > 0) {
         const durations = [7, 10, 15, 20, 30];
-        // Find the smallest duration option that is >= maxDays
         let selectedDuration = durations.find(d => d >= maxDays);
 
-        // If maxDays is greater than the largest option, default to the largest.
         if (!selectedDuration) {
             selectedDuration = 30;
         }
         
-        // Set the billing form to 'Medicine' and the calculated duration
         const chargeTypeSelect = document.getElementById('chargeType');
         chargeTypeSelect.value = 'medicine';
-        updateDescriptionOptions(); // This is crucial to run first to populate the next dropdown
+        updateDescriptionOptions(); 
 
         const chargeDescriptionSelect = document.getElementById('chargeDescription');
         if (chargeDescriptionSelect) {
@@ -613,7 +597,6 @@ function autofillMedicineBill() {
         }
     }
 }
-
 
 function addMedication() {
     const name = document.getElementById('medName').value;
@@ -625,7 +608,7 @@ function addMedication() {
         medications.push({ name, dosePotency, frequency, duration });
         updateMedicationList();
         clearMedicationInputs();
-        autofillMedicineBill(); // Autofill billing form
+        autofillMedicineBill();
     } else {
         alert('Please fill all medication fields');
     }
@@ -676,7 +659,7 @@ function clearMedicationInputs() {
 function removeMedication(index) {
     medications.splice(index, 1);
     updateMedicationList();
-    autofillMedicineBill(); // Re-evaluate billing form
+    autofillMedicineBill();
 }
 
 function editMedication(index) {
@@ -702,13 +685,13 @@ function saveEditMedication() {
     };
     updateMedicationList();
     cancelEdit('editForm');
-    autofillMedicineBill(); // Re-evaluate billing form
+    autofillMedicineBill();
 }
 
 function clearAllMedications() {
     medications = [];
     updateMedicationList();
-    autofillMedicineBill(); // Re-evaluate billing form
+    autofillMedicineBill();
 }
 
 // Lab test functions
@@ -868,7 +851,6 @@ function addCharge() {
     const descriptionElement = document.getElementById('chargeDescription');
     let description;
     
-    // Check if it's a dropdown (standard types) or simple input (others type)
     if (descriptionElement.tagName === 'SELECT') {
         description = getCustomSelectValue('chargeDescription', 'chargeDescriptionCustom');
     } else {
@@ -881,7 +863,6 @@ function addCharge() {
         charges.push({ 
             type, 
             description,
-            // If the description matches a key in our map, format it; otherwise use as-is (custom text)
             displayDescription: type === 'others' ? description : getFormattedDescription(description),
             amount: parseFloat(amount) 
         });
@@ -995,19 +976,17 @@ function removeCharge(index) {
 function clearAllCharges() {
     const hadMedicineCharge = charges.some(c => c.type === 'medicine');
     charges = [];
-    removeDiscount(); // Also clears discount
+    removeDiscount(); 
     updateBillingList();
     if(hadMedicineCharge) {
         autofillMedicineBill();
     }
 }
 
-// Generic functions
 function cancelEdit(formId) {
     document.getElementById(formId).style.display = 'none';
 }
 
-// Print functionality
 function printPrescription(type = 'both') {
     const patientName = document.getElementById('patientName').value;
     const patientAge = document.getElementById('patientAge').value;
@@ -1021,7 +1000,6 @@ function printPrescription(type = 'both') {
         return;
     }
 
-    // Validate based on print type
     if (type === 'medications' && medications.length === 0) {
         alert('Please add at least one medication');
         return;
@@ -1171,8 +1149,10 @@ function printPrescription(type = 'both') {
         <body>
             <div class="prescription-container">
                  <div class="header">
-                    <h1>Dr. Archit K. Mehta</h1>
-                    <p>BHMS; MD (Hom.) Psychiatry (GOLD MEDALIST)</p>
+                    <h1>Dr. Archit's Clinic</h1>
+                    <p>Psychiatry & Homoeopathy</p>
+                    <p style="margin-top: 10px;"><strong>Dr. Archit K. Mehta</strong> | BHMS; MD (Hom.) Psychiatry (GOLD MEDALIST)</p>
+                    <p style="font-size: 0.9em; margin-top: 5px;">134, 1st Floor, Fortune High Street, Opp. Western Arena, Near Madhuvan Circle, Adajan, Surat.</p>
                 </div>
                 <div class="content-body">
                 <h1 class="document-title">${title}</h1>
@@ -1190,7 +1170,6 @@ function printPrescription(type = 'both') {
     }
     printContent += `</div>`;
 
-    // Add Medications Section
     if ((type === 'medications' || type === 'both') && medications.length > 0) {
         printContent += `
             <h2>Medications</h2>
@@ -1219,7 +1198,6 @@ function printPrescription(type = 'both') {
         printContent += `</table>`;
     }
 
-    // Add Lab Tests Section
     if ((type === 'labs' || type === 'both') && labTests.length > 0) {
         printContent += `
             <h2>Lab Tests</h2>
@@ -1246,7 +1224,6 @@ function printPrescription(type = 'both') {
         printContent += `</table>`;
     }
 
-    // Add Billing Section
     if ((type === 'billing' || type === 'both') && charges.length > 0) {
         const subtotal = charges.reduce((sum, charge) => sum + charge.amount, 0);
         const discountAmount = parseFloat(document.getElementById('discountAmount').value) || 0;
@@ -1320,7 +1297,6 @@ function printPrescription(type = 'both') {
         `;
     }
 
-    // Add signature section
     printContent += `
                 <div class="signature-section">
                      <div class="signature-line">
@@ -1334,21 +1310,16 @@ function printPrescription(type = 'both') {
         </html>
     `;
 
-    // Open print window
     const printWindow = window.open('', '_blank');
     printWindow.document.write(printContent);
     printWindow.document.close();
     printWindow.print();
 }
 
-// Window load event to ensure DOM is fully loaded
 window.onload = function() {
-    // Initialize all lists
     updateMedicationList();
     updateLabTestsList();
     updateBillingList();
-    
-    // Set up initial description options
     updateDescriptionOptions();
 };
     </script>
